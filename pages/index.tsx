@@ -203,7 +203,6 @@ const Home2: NextPage = () => {
               <button
                 onClick={(e) => {
                   setEditMode(undefined);
-                  setCurrentlyEditedValue(e.target.value);
                   setTodoList((prevState) => {
                     return [...prevState];
                   });
