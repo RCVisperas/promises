@@ -1,11 +1,10 @@
-export enum StatusType {
+export enum StatusData {
   unfinish = "unfinish",
   finished = "finished",
-  "not sure" = "not sure",
 }
 
-export interface Datas {
+export interface datas {
   id?: number;
   content: string;
-  status: StatusType;
+  status: StatusData;
 }

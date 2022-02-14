@@ -1,7 +1,7 @@
 import axios from "axios";
-import { Datas } from "./dataInterface";
+import { datas } from "./dataInterface";
 
-axios.defaults.baseURL = "https://e20d-115-147-35-117.ngrok.io";
+axios.defaults.baseURL = "https://a2e1-115-147-35-117.ngrok.io/";
 export const getAllTodos = () => {
   return axios
     .get("/todo")
@@ -12,9 +12,9 @@ export const getAllTodos = () => {
       throw Error;
     });
 };
-export const createNewTodos = (Data: Datas) => {
+export const createNewTodos = (data: datas) => {
   return axios
-    .post("/todo", Data)
+    .post("/todo", data)
     .then((res) => {
       return res.data;
     })
@@ -33,9 +33,9 @@ export const deleteTodos = (id: number) => {
       throw Error;
     });
 };
-export const editTodos = (Data: Datas) => {
+export const editTodos = (data: datas) => {
   return axios
-    .patch(`/todo/${Data.id}`)
+    .patch(`/todo/${data.id}`)
     .then((res) => {
       return res.data;
     })
