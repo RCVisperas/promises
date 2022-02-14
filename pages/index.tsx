@@ -13,9 +13,7 @@ const Home: NextPage = () => {
   const [todos, setTodos] = useState<datas[]>([]);
   const [content, setContent] = useState<string>("");
   const [update, setUpdate] = useState<string>("");
-  const [statusUpdate, setStatusUpdate] = useState<StatusData>(
-    StatusData.unfinish
-  );
+  const [status, setStatus] = useState<string>("");
 
   useEffect(() => {
     getAll();
@@ -29,97 +27,84 @@ const Home: NextPage = () => {
         console.log(err);
       });
   };
-  const deleteTodo = (id: number) => {
-    deleteTodos(id)
-      .then((res) => {
-        const updated = [...todos].filter((todo) => todo.id !== id);
-
-        setTodos(updated);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-  const updateTodo = (e: React.MouseEvent<HTMLButtonElement>) => {
-    editTodos({
-      content: update,
-      status: statusUpdate,
-    })
-      .then((res) => {
-        const updated = [...todos, res];
-        console.log("updated task: ", updated);
-        setTodos(updated);
-        setStatusUpdate(StatusData.finished);
-        setUpdate("");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-  const createNewTodo = (e: React.MouseEvent<HTMLElement>) => {
-    e.preventDefault();
+  const createContent = () => {
     createNewTodos({
       content: content,
-      status: statusUpdate,
+      status: StatusData.unfinish,
     })
       .then((res) => {
-        const updated = [...todos, res];
-        console.log(updated);
-        setTodos(updated);
+        const updated = res;
+        getAll();
         setContent("");
       })
       .catch((err) => {
+        console.log("error creating", err);
+      });
+  };
+  const deleteContent = (id: number | undefined) => {
+    deleteTodos(id)
+      .then((res) => {
+        todos.filter((word, index, arr) => {
+          arr.pop();
+          return word.id === id;
+        });
+        getAll();
+      })
+      .catch((err) => {
         console.log(err);
       });
   };
-  function handleEdit(id: number) {
-    const finding = todos.find((todo) => todo.id === id);
-    finding && setContent(finding.content) && setStatusUpdate(finding.status);
-  }
 
+  const putClickonText = (id: number | undefined) => {
+    const index = todos.find((todo) => todo.id === id);
+    {
+      index && setUpdate(index.content);
+      index && setStatus(index.status);
+    }
+  };
+  const updateContent = (id: number | undefined) => {
+    editTodos(id).then((res) => {
+      const updated = res;
+      getAll();
+    });
+  };
   return (
-    <div>
+    <>
       <div>
-        <label>content:</label>
         <input
           type="text"
-          placeholder="Enter Content Here"
-          name="content"
+          placeholder="Enter a Content"
           value={content}
           onChange={(e) => setContent(e.target.value)}
         ></input>
-
-        <button onClick={createNewTodo}>Add</button>
+        <button onClick={createContent}>Submit</button>
       </div>
       <div>
-        <label>update-content:</label>
+        {" "}
         <input
           type="text"
-          placeholder="Enter Content Here"
-          name="content"
+          placeholder="Enter a Content"
           value={update}
           onChange={(e) => setUpdate(e.target.value)}
         ></input>
-        <select>
-          <option value={StatusData.finished}>finished</option>
-          <option value={StatusData.unfinish}>unfinished</option>
-        </select>
-        {!(update === "") ? (
-          <button onClick={updateTodo}>Save</button>
-        ) : (
-          <button disabled>Save</button>
-        )}
+        <input type="text" placeholder="Enter a Content" value={status}></input>
+        <button onClick={() => updateContent(todo.id)}>Save</button>
       </div>
-      {todos.map((todos) => {
-        return (
-          <div key={todos.id}>
-            Content: {todos.content} Status: {todos.status}{" "}
-            <button onClick={() => handleEdit(todos.id)}>EDIT</button>
-            <button onClick={() => deleteTodo(todos.id)}>DELETE</button>
-          </div>
-        );
-      })}
-    </div>
+      <div>
+        <div>
+          {" "}
+          {todos.map((todo, index) => {
+            return (
+              <div key={index}>
+                {todo.content}{" "}
+                <button onClick={() => putClickonText(todo.id)}>edit</button>
+                <button onClick={() => deleteContent(todo.id)}>delete</button>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </>
   );
 };
 

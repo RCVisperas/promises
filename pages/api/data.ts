@@ -23,7 +23,7 @@ export const createNewTodos = (data: datas) => {
     });
 };
 
-export const deleteTodos = (id: number) => {
+export const deleteTodos = (id: number | undefined) => {
   return axios
     .delete(`/todo/${id}`)
     .then((res) => {
@@ -33,9 +33,10 @@ export const deleteTodos = (id: number) => {
       throw Error;
     });
 };
-export const editTodos = (data: datas) => {
+
+export const editTodos = (id: number | undefined) => {
   return axios
-    .patch(`/todo/${data.id}`)
+    .patch(`/todo/${id}`)
     .then((res) => {
       return res.data;
     })
