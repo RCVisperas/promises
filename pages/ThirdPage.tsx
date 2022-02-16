@@ -1,5 +1,11 @@
 import React, { ChangeEvent, KeyboardEvent, useEffect, useState } from "react";
-import { createNewTodos, editTodos, getAllTodos, Todo } from "./api/data";
+import {
+  createNewTodos,
+  deleteTodos,
+  editTodos,
+  getAllTodos,
+  Todo,
+} from "./api/data";
 import { Datas } from "./api/dataInterface";
 
 const ThirdPage = () => {
@@ -37,10 +43,15 @@ const ThirdPage = () => {
         console.log(er);
       });
   };
-
-  useEffect(() => {
-    console.log("this is a new todo", newTodo);
-  }, [newTodo]);
+  function deleteContentFromTodo(id: number) {
+    deleteTodos(id)
+      .then(() => {
+        getAllTodosFetchAndPutIntoState();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
   return (
     <>
       <div>
@@ -55,7 +66,7 @@ const ThirdPage = () => {
       <div>
         <ul
           style={{
-            maxWidth: 320,
+            maxWidth: 400,
           }}
         >
           {task.map((ea) => (
@@ -100,12 +111,17 @@ const ThirdPage = () => {
                   }}
                 />
               ) : (
-                <p>{ea.content}</p>
+                <>
+                  <p>{ea.content}</p>
+                  <button onClick={() => deleteContentFromTodo(ea.id)}>
+                    Delete
+                  </button>
+                </>
               )}
+
               <input
                 type="checkbox"
                 checked={ea.status === "finished"}
-                // defaultValue={ea.status === "finished" ?}
                 onClick={() => {
                   console.log(
                     "ea status",
@@ -113,11 +129,13 @@ const ThirdPage = () => {
                   );
                   editTodos(ea.id, {
                     status: ea.status === "finished" ? "unfinish" : "finished",
-                  }).then((res) => {
-                    getAllTodosFetchAndPutIntoState();
-                    console.log("RESULT FROM UPDATING TODO VIA CHECKBOX");
-                    console.log(res);
-                  });
+                  })
+                    .then((res) => {
+                      getAllTodosFetchAndPutIntoState();
+                    })
+                    .catch((err) => {
+                      console.log(err);
+                    });
                 }}
               />
             </li>

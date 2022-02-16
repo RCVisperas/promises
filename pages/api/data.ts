@@ -9,7 +9,7 @@ export interface Todo {
   content: string;
   status: "finished" | "unfinish";
 }
-axios.defaults.baseURL = "http://192.168.1.101:5000";
+axios.defaults.baseURL = "https://4eff-115-147-35-117.ngrok.io/";
 
 export const getAllTodos = () => {
   return axios
