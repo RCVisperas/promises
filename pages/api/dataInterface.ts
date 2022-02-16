@@ -3,8 +3,8 @@ export enum StatusData {
   finished = "finished",
 }
 
-export interface datas {
-  id?: number;
+export interface Datas {
+  id: number;
   content: string;
-  status: StatusData;
+  status: string;
 }

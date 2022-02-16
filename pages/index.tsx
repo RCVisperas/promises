@@ -1,19 +1,21 @@
 import { stat } from "fs";
 import type { NextPage } from "next";
-import React, { ChangeEvent, MouseEvent, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   createNewTodos,
   deleteTodos,
   editTodos,
   getAllTodos,
 } from "./api/data";
-import { datas, StatusData } from "./api/dataInterface";
+import { Datas } from "./api/dataInterface";
 
 const Home: NextPage = () => {
-  const [todos, setTodos] = useState<datas[]>([]);
+  const [todos, setTodos] = useState<Datas[]>([]);
   const [content, setContent] = useState<string>("");
   const [update, setUpdate] = useState<string>("");
   const [status, setStatus] = useState<string>("");
+  const [currenlyUpdated, setCurrentlyUpdated] = useState<number>();
+  const [todoObject, setTodoObject] = useState<object | undefined>(todos);
 
   useEffect(() => {
     getAll();
@@ -29,8 +31,9 @@ const Home: NextPage = () => {
   };
   const createContent = () => {
     createNewTodos({
+      id: todos.length + 1,
       content: content,
-      status: StatusData.unfinish,
+      status: "unfinish",
     })
       .then((res) => {
         const updated = res;
@@ -58,15 +61,38 @@ const Home: NextPage = () => {
   const putClickonText = (id: number | undefined) => {
     const index = todos.find((todo) => todo.id === id);
     {
+      index && setCurrentlyUpdated(index.id);
       index && setUpdate(index.content);
       index && setStatus(index.status);
     }
+    setTodoObject(index);
+    console.log(setTodoObject);
   };
+
+  // let testing = {
+  //   id: 0,
+  //   content: "hello world",
+  //   status: "not yet done",
+  // };
+  // console.log("before updated", testing);
+  // testing = {
+  //   ...testing,
+  //   content: "hi world",
+  // };
+  // console.log("after updated", testing);
+
   const updateContent = (id: number | undefined) => {
-    editTodos(id).then((res) => {
-      const updated = res;
-      getAll();
-    });
+    editTodos(id)
+      .then((res) => {
+        let selectedclickArray = {
+          ...todoObject,
+          content: { update },
+          status: { status },
+        };
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   return (
     <>
@@ -87,8 +113,13 @@ const Home: NextPage = () => {
           value={update}
           onChange={(e) => setUpdate(e.target.value)}
         ></input>
-        <input type="text" placeholder="Enter a Content" value={status}></input>
-        <button onClick={() => updateContent(todo.id)}>Save</button>
+        <input
+          type="text"
+          placeholder="Enter a Content"
+          value={status}
+          onChange={(e) => setStatus(e.target.value)}
+        ></input>
+        {/* <button onClick={() => updateContent(todos.id)}>Save</button> */}
       </div>
       <div>
         <div>

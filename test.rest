@@ -1,0 +1,21 @@
+POST http://192.168.1.101:5000/todo
+Content-Type: application/json
+
+{
+ "content": "Hello world", 
+ "status": "finished"
+}
+
+###
+GET http://192.168.1.101:5000/todo
+
+###
+DELETE http://192.168.1.101:5000/todo/93
+
+###
+PATCH http://192.168.1.101:5000/todo/94
+Content-Type: application/json
+
+{
+    "content": "hi"
+}
