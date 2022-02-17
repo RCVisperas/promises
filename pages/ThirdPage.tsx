@@ -38,6 +38,7 @@ const ThirdPage = () => {
     })
       .then((res) => {
         getAllTodosFetchAndPutIntoState();
+        setNewTodo("");
       })
       .catch((er) => {
         console.log(er);
@@ -60,6 +61,7 @@ const ThirdPage = () => {
           type={"text"}
           onChange={onChangeInputTodo}
           placeholder="Enter A Content"
+          value={newTodo}
         />
         <button onClick={handleTodoCreate}>Submit</button>
       </div>
